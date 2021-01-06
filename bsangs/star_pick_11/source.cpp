@@ -49,7 +49,7 @@ void print_triangle(int width, int height) {
 	}
 }
 int main() {
-	int N, triangle_height, height, width;
+	int N, triangle_count, height, width;
 	
 	scanf("%d", &N);
 	
@@ -62,7 +62,7 @@ int main() {
 	// triangle_mapping 에서 용도 설명
 	triangle_count = N / 3;
 	
-	triangle_mapping(triangle_count, 0, 0)
+	triangle_mapping(triangle_count, 0, 0);
 	
 	print_triangle(width, height);
 }
