@@ -42,7 +42,7 @@ void triangle_mapping(int triangle_count, int x, int y) {
 void print_triangle(int width, int height) {
 	for(int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
-			if (!triangle_draw[j][i]) printf("*");
+			if (triangle_draw[j][i]) printf("*");
 			else printf(" ");
 		}
 		printf("\n");
