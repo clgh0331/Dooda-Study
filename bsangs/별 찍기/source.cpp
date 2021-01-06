@@ -23,7 +23,6 @@ int get_k(int N) {
 }
 
 void triangle_print(int k, int y, int x) {
-	triangle_draw[x + 0][y + 0] = 1;
 	
 }
 
