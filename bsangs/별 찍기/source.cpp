@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-bool triangle_draw[2049][1024];
+bool triangle_draw[3072][6145];
 
 int get_height(int k) {
 	int height = 2;
@@ -22,7 +22,7 @@ int get_k(int N) {
 	return k;
 }
 
-void triangle_print(int k, int y, int x) {
+void triangle_print(int n, int x, int y) {
 	
 }
 
@@ -39,11 +39,9 @@ int main() {
 	int N, k, height, width;
 	
 	scanf("%d", &N);
-	 
-	k = get_k(N);
 	
 	height = N;
-	width = N * 2 + 1;
+	width = N * 2 - 1;
 	
 	print_triangle(width, height);
 }
