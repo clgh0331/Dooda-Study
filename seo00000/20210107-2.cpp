@@ -5,25 +5,19 @@ using namespace std;
 int main()
 {
     int a, b, v;
-    
+
     cin >> a >> b >> v;
-    
-    /*int cnt = 0;
-    
-    while(v > 1){
-        cnt++;
-        v -= a;
-        if(v < 1){
-            break;
-        }
-        v+= b;
-    }
-    cout << cnt;*/
-    
-    int day = v/(a-b);
-    int etc = v%(a-b)-b;
-    
-    cout << (day+etc) <<endl;
-    
+
+    //(a-b) * n + b >= v
+    //n >= (v-b) / (a-b)
+    //나머지가 있으면 n에 1을 더해주면 됨.
+
+    int day = (v - b) / (a - b);
+    bool etc = (v - b) % (a - b) != 0 ? true : false;
+
+    if (etc) day++;
+
+    cout << day << endl;
+
     return 0;
 }
