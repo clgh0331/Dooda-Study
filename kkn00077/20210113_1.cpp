@@ -21,9 +21,18 @@ int main() {
     
     while(true){
         
-        int a_num = ((int)a[a_idx])-48;
-        int b_num = ((int)b[b_idx])-48;
-        int plus_num = a_num+b_num;
+        // 서로 다른 숫자이며, 자릿수가 다를 경우를 대비해 어느 특정 숫자가 자릿수가 모자를 경우 0으로 채워주기 위함
+        int a_num = 0;
+        int b_num = 0;
+        int plus_num = 0;
+        
+        // 더는 연산할 자릿수가 없을 경우 반복문에서 빠져나옴
+        if(add_num_idx < 0) break;
+        
+        if(a_idx >= 0) a_num = ((int)a[a_idx])-48;
+        if (b_idx >= 0) b_num = ((int)b[b_idx])-48;
+        
+        plus_num=a_num+b_num;
         
         //덧셈해서 자릿수가 올라갔을 경우 반영시켜준다. (check는 plag 변수 사용)
         if(plag){
@@ -31,13 +40,6 @@ int main() {
             plus_num+=1;
         }
         
-        //TODO
-        // 더는 자릿수가 남아있지 않을 경우 남은 자릿수 그대로 집어 넣어야함
-        if(a_idx < 0 || b_idx < 0){
-            break;   
-        }
-        
-        cout << a_num <<" " <<b_num << " " << a_num+b_num << endl;
         //덧셈 수행. 10이 넘어갔을 경우 더한 숫자에서 10만큼 빼고 plag를 true로 바꾼다.
         if(plus_num >= 10){
             plag = true;
@@ -47,15 +49,17 @@ int main() {
             add_num[add_num_idx] = plus_num;
         }
         
-        //cout << add_num[add_num_idx] << endl;
-        
         a_idx--;
         b_idx--;
         add_num_idx--;
     }
     
+    
     for(int i=0;i<add_num_len;i++){
-        cout << add_num[i] << " ";
+        // 최대 자릿수(마지막 자리가 10을 넘어갔을 경우)를 고려해 +1한 배열에
+        // 10이 안넘어 갔을 경우 0을 저장함. 이것에 대한 예외처리.
+        if(i==0 && add_num[i]==0) continue;
+        cout << add_num[i];
     }
     
     return 0;
