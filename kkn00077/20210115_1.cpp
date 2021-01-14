@@ -10,10 +10,11 @@ class BigDecimalCal{
         string a, b;
         
         //소수점 뒷자리를 받았을 경우 자리수가 차이 난다면 맞춰주기 위해 뒷부분을 0으로 채운다.
-        string fillZeroDecimal(string num, int add_len){
+        string fillZero(string num, int add_len, bool isDecimal){
             int num_len = num.length();
             for(int i=num_len;i<add_len;i++){
-                num += '0';
+                if(isDecimal) num += '0';
+                else num = '0'+num;
             }
             return num;
         }
@@ -23,8 +24,6 @@ class BigDecimalCal{
             char *add_num;
             int add_num_len;
             string fillnum;
-            
-            //TODO split 후 배열 길이만큼 for문 내에 while 문 반복
             
             if(a.length() > b.length()) {
                 add_num_len = a.length();
@@ -37,7 +36,7 @@ class BigDecimalCal{
             
             if(!isDecimal) add_num_len += 1;
             else {
-                fillnum = fillZeroDecimal(fillnum, add_num_len);
+                fillnum = fillZero(fillnum, add_num_len, isDecimal);
                 
                 // 소수점 뒷자리를 0으로 채운 후 다시 원래 변수로 돌려줌
                 if(a.length() > b.length()) b = fillnum;
@@ -83,7 +82,33 @@ class BigDecimalCal{
                 add_num_idx--;
             }
             
+            //flag를 원상태로 돌려줌.
+            flag = false;
+            
             return add_num;
+        }
+        
+        string* number_split(string n){
+            //strtok을 사용하기 위해 string에서 char*로 형변환
+            string* split = new string[2];
+            char* n_char_str=new char[n.length()];
+            char* token;
+            int cnt_split = 0;
+            
+            
+            strcpy(n_char_str, n.c_str());
+            
+            //split
+            token=strtok(n_char_str, ".");
+           
+            while(token != NULL){
+                string temp(token);
+                split[cnt_split] = temp;
+                token = strtok(NULL, ".");
+                cnt_split++;
+            }
+            
+            return split;
         }
         
     public:
@@ -109,28 +134,77 @@ class BigDecimalCal{
             }
         }
         
-        string* number_split(string n){
-            //strtok을 사용하기 위해 string에서 char*로 형변환
-            string* split = new string[2];
-            char* n_char_str=new char[n.length()];
-            char* token;
-            int cnt_split = 0;
+        void subtract(){
+            string* a_split=number_split(a);
+            string* b_split=number_split(b);
+            bool is_A_bigger = false;
             
+            int a_essence_len = a_split[0].length();
+            int b_essence_len = b_split[0].length();
+            int a_decimal_len = a_split[1].length();
+            int b_decimal_len = b_split[1].length();
             
-            strcpy(n_char_str, n.c_str());
-            
-            //split
-            token=strtok(n_char_str, ".");
-           
-            while(token != NULL){
-                string temp(token);
-                split[cnt_split] = temp;
-                token = strtok(NULL, ".");
-                cnt_split++;
+            //정수 비교 - 어느 한쪽의 자릿수가 더 많으면 그 수가 크다
+            if(a_essence_len > b_essence_len) {
+                is_A_bigger = true;
+                b_split[0] = fillZero(b, a_essence_len-b_essence_len, false);
+            }
+            //아닐 경우 정수와 실수 부분의 비교를 한다.
+            else {
+                //정수 부분의 자릿수가 같을 경우 a, b 각각 자릿수마다 돌면서 숫자 비교
+                if(a_essence_len == b_essence_len){
+                    int cnt = 0;
+                    for(int i=0;i<a_essence_len;i++, cnt++){
+                        if(a_split[0][i] > b_split[0][i]){
+                            is_A_bigger = true;
+                            break;
+                        } 
+                        else if (a_split[0][i] < b_split[0][i]){
+                            break;
+                        }
+                    }
+                    
+                    //정수부분 비교를 다 했는데도 정수 부분은 값이 똑같을 때 소숫점 아래 비교
+                    if(!is_A_bigger && cnt == a_essence_len){
+                        cnt = 0;
+                        // 똑같은 소숫점까지만 자릿수를 비교한다.
+                        for(int i=0, j=0;;i++, j++, cnt++){
+                            if(i >= a_decimal_len) break;
+                            if(j >= b_decimal_len) break;
+                            
+                            if(a_split[1][i] > b_split[1][j]){
+                                is_A_bigger = true;
+                                break;
+                            } 
+                            else if (a_split[1][i] < b_split[1][j]){
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if(cnt == a_decimal_len || cnt == b_decimal_len){
+                        // 실수부분까지 하나하나 자릿수를 다 비교 했음에도(실수의 자릿수가 적은 쪽만큼만 비교함)
+                        // 비교하지 못한 소수점 이하 부분을 체크해 더 큰 숫자를 골라낸다.
+                        // 자릿수가 같다면 같은 값이 입력되었다고 판단한다.
+                        if(a_decimal_len > b_decimal_len){
+                            is_A_bigger = true;
+                        }
+                        else{
+                            cout << "0";
+                            return;
+                        }
+                    }
+                }
+                    
             }
             
-            return split;
+            if(is_A_bigger){
+                //cout << a;
+            } else {
+                //cout << b;
+            }
         }
+        
 };
 
 int main() {
@@ -145,7 +219,9 @@ int main() {
     if(sign == '+') {
         cal.sum();
     }
-    else if (sign == '-') return 0;
+    else if (sign == '-') { 
+        cal.subtract();
+    }
     else return 0;
     
     return 0;
