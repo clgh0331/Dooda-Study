@@ -94,8 +94,42 @@ class BigDecimalCal{
             flag = false;
         }
     
-        string sum(){
-            //TODO split
+        void sum(){
+            string* a_split=number_split(a);
+            string* b_split=number_split(b);
+            
+            string decimal(sum_char_num(a_split[1], b_split[1], true));
+            string essence(sum_char_num(a_split[0], b_split[0], false));
+            
+            string result=essence+"."+decimal;
+            
+            for(int i=0;i<result.length();i++){
+                if(result[i] == '0' && i == 0) continue;
+                cout << result[i];
+            }
+        }
+        
+        string* number_split(string n){
+            //strtok을 사용하기 위해 string에서 char*로 형변환
+            string* split = new string[2];
+            char* n_char_str=new char[n.length()];
+            char* token;
+            int cnt_split = 0;
+            
+            
+            strcpy(n_char_str, n.c_str());
+            
+            //split
+            token=strtok(n_char_str, ".");
+           
+            while(token != NULL){
+                string temp(token);
+                split[cnt_split] = temp;
+                token = strtok(NULL, ".");
+                cnt_split++;
+            }
+            
+            return split;
         }
 };
 
@@ -109,7 +143,7 @@ int main() {
     
     //부호 체크로 덧셈, 뺄셈 함수 각각 적용
     if(sign == '+') {
-        cal.sum_char_num(true);
+        cal.sum();
     }
     else if (sign == '-') return 0;
     else return 0;
